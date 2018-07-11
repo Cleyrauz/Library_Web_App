@@ -2,6 +2,7 @@ package models;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="books")
@@ -11,18 +12,17 @@ public class Book {
     private String title;
     private String author;
     private boolean onLoan;
-    private ArrayList<Borrower> currentBorrower;
+    private Borrower currentBorrower;
     private Library library;
 
     public Book(){
 
     }
 
-    public Book(String title, String author, boolean onLoan, Library libray) {
+    public Book(String title, String author, boolean onLoan, Library library) {
         this.title = title;
         this.author = author;
         this.onLoan = onLoan;
-        this.currentBorrower = new ArrayList<>();
         this.library = library;
     }
 
@@ -64,12 +64,13 @@ public class Book {
         this.onLoan = onLoan;
     }
 
-    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
-    public ArrayList<Borrower> getCurrentBorrower() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "borrower_id", nullable = true)
+    public Borrower getCurrentBorrower() {
         return currentBorrower;
     }
 
-    public void setCurrentBorrower(ArrayList<Borrower> currentBorrower) {
+    public void setCurrentBorrower(Borrower currentBorrower) {
         this.currentBorrower = currentBorrower;
     }
 
@@ -83,7 +84,7 @@ public class Book {
         this.library = library;
     }
 
-    public void addCurrentBorrower(Borrower borrower){
-        this.currentBorrower.add(borrower);
-    }
+//    public void addCurrentBorrower(Borrower borrower){
+//        this.currentBorrower.add(borrower);
+//    }
 }

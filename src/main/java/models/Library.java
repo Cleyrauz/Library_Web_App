@@ -2,18 +2,25 @@ package models;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="libraries")
 public class Library {
 
-    private ArrayList<Book> books;
-    private ArrayList<Borrower> borrowers;
+    private List<Book> books;
+    private List<Borrower> borrowers;
     private String name;
     private int id;
 
     public Library(){
 
+    }
+
+    public Library(String name) {
+        this.books = new ArrayList<Book>();
+        this.borrowers = new ArrayList<Borrower>();
+        this.name = name;
     }
 
     @Id
@@ -37,20 +44,20 @@ public class Library {
     }
 
     @OneToMany(mappedBy = "library", fetch = FetchType.LAZY)
-    public ArrayList<Book> getBooks() {
+    public List<Book> getBooks() {
         return books;
     }
 
-    public void setBooks(ArrayList<Book> books) {
+    public void setBooks(List<Book> books) {
         this.books = books;
     }
 
     @OneToMany(mappedBy = "library", fetch = FetchType.LAZY)
-    public ArrayList<Borrower> getBorrowers() {
+    public List<Borrower> getBorrowers() {
         return borrowers;
     }
 
-    public void setBorrowers(ArrayList<Borrower> borrowers) {
+    public void setBorrowers(List<Borrower> borrowers) {
         this.borrowers = borrowers;
     }
 
@@ -62,3 +69,5 @@ public class Library {
         this.borrowers.add(borrower);
     }
 }
+
+
