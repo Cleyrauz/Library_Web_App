@@ -1,11 +1,15 @@
+package controllers;
+
 import db.DBHelper;
 import models.Book;
 import models.Borrower;
 import models.Library;
 
-public class Runner {
+public class Seeds {
 
-    public static void main(String[] args) {
+    public static void seedData() {
+        DBHelper.deleteAll(Book.class);
+        DBHelper.deleteAll(Borrower.class);
 
         Library library = new Library("Public library");
         DBHelper.save(library);
@@ -30,5 +34,7 @@ public class Runner {
 
         book1.setCurrentBorrower(borrower1);
         book3.setCurrentBorrower(borrower2);
+
+
     }
 }

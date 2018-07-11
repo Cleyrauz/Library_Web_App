@@ -13,11 +13,11 @@ public class DBHelper {
     private static Transaction transaction;
     private static Session session;
 
-    public static void save(Object object){
+    public static void save(Object object) {
         session = HibernateUtil.getSessionFactory().openSession();
         try {
             transaction = session.beginTransaction();
-            session.save(object);
+            session.saveOrUpdate(object);
             transaction.commit();
         } catch (HibernateException e) {
             transaction.rollback();
@@ -27,21 +27,58 @@ public class DBHelper {
         }
     }
 
-    public static void update(Object object){
+    public static <T> List<T> getList(Criteria criteria) {
+        List<T> results = null;
+        try {
+            transaction = session.beginTransaction();
+            results = criteria.list();
+            ;
+            transaction.commit();
+        } catch (HibernateException ex) {
+            transaction.rollback();
+            ex.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return results;
+    }
+
+    public static <T> T getUnique(Criteria criteria) {
+        T result = null;
+        try {
+            transaction = session.beginTransaction();
+            result = (T) criteria.uniqueResult();
+            ;
+            transaction.commit();
+        } catch (HibernateException ex) {
+            transaction.rollback();
+            ex.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return result;
+    }
+
+    public static <T> void deleteAll(Class classType) {
         session = HibernateUtil.getSessionFactory().openSession();
         try {
             transaction = session.beginTransaction();
-            session.update(object);
+            Criteria cr = session.createCriteria(classType);
+            List<T> results = cr.list();
+            for (T result : results) {
+                session.delete(result);
+            }
             transaction.commit();
-        } catch (HibernateException e) {
+        } catch (HibernateException ex) {
             transaction.rollback();
-            e.printStackTrace();
+            ex.printStackTrace();
         } finally {
             session.close();
         }
     }
 
-    public static void delete(Object object){
+
+    public static void delete(Object object) {
         session = HibernateUtil.getSessionFactory().openSession();
         try {
             transaction = session.beginTransaction();
@@ -55,33 +92,17 @@ public class DBHelper {
         }
     }
 
-
     public static <T> List<T> getAll(Class classType) {
         session = HibernateUtil.getSessionFactory().openSession();
-        List<T> results = null;
-        try {
-            Criteria cr = session.createCriteria(classType);
-            results = cr.list();
-        } catch (HibernateException e) {
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return results;
+        Criteria cr = session.createCriteria(classType);
+        return getList(cr);
     }
 
-    public static <T> T find(Class classType, int id) {
+    public static <T> T find(int id, Class classType) {
         session = HibernateUtil.getSessionFactory().openSession();
-        T result = null;
-        try {
-            Criteria cr = session.createCriteria(classType);
-            cr.add(Restrictions.eq("id", id));
-            result = (T) cr.uniqueResult();
-        } catch (HibernateException e) {
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return result;
+        Criteria cr = session.createCriteria(classType);
+        cr.add(Restrictions.eq("id", id));
+        return getUnique(cr);
+
     }
 }
