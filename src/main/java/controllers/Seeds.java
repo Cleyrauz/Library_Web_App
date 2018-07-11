@@ -23,7 +23,7 @@ public class Seeds {
 
         Borrower borrower1 = new Borrower("Cleyra Uzcategui", library);
         DBHelper.save(borrower1);
-        Borrower borrower2 = new Borrower("Jose Manuel Uzcategui", library);
+        Borrower borrower2 = new Borrower("Pascaline Martin", library);
         DBHelper.save(borrower2);
 
         library.addBook(book1);
